@@ -1,0 +1,3110 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canteen Turn Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Login Page -->
+    <div id="login-page" class="page active">
+        <div class="login-container">
+            <div class="login-header">
+                <i class="fas fa-utensils logo-icon"></i>
+                <h1>Canteen Manager</h1>
+                <p>Turn Management System</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            <div class="login-footer">
+                <p>Admin Demo: admin@canteen.com / admin123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="page">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-utensils"></i>
+                <span>Canteen Admin</span>
+            </div>
+            <div class="nav-user">
+                <span id="admin-name">Admin</span>
+                <button id="admin-logout" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+
+        <div class="dashboard-container">
+            <div class="sidebar">
+                <button class="sidebar-btn active" data-section="overview">
+                    <i class="fas fa-home"></i> Overview
+                </button>
+                <button class="sidebar-btn" data-section="students">
+                    <i class="fas fa-users"></i> Students
+                </button>
+                <button class="sidebar-btn" data-section="groups">
+                    <i class="fas fa-layer-group"></i> Groups
+                </button>
+                <button class="sidebar-btn" data-section="payments">
+                    <i class="fas fa-money-bill"></i> Payments
+                </button>
+                <button class="sidebar-btn" data-section="notifications">
+                    <i class="fas fa-bell"></i> Notifications
+                </button>
+            </div>
+
+            <div class="main-content">
+                <!-- Overview Section -->
+                <section id="overview-section" class="content-section active">
+                    <h2>Dashboard Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <div class="stat-info">
+                                <h3 id="total-students">0</h3>
+                                <p>Total Students</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-layer-group"></i>
+                            <div class="stat-info">
+                                <h3 id="total-groups">0</h3>
+                                <p>Total Groups</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-circle online"></i>
+                            <div class="stat-info">
+                                <h3 id="online-users">0</h3>
+                                <p>Online Now</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-receipt"></i>
+                            <div class="stat-info">
+                                <h3 id="total-payments">0</h3>
+                                <p>Total Payments</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h3>Online Students</h3>
+                        <div id="online-students-list" class="online-list"></div>
+                    </div>
+                </section>
+
+                <!-- Students Section -->
+                <section id="students-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Manage Students</h2>
+                        <button class="btn btn-primary" id="add-student-btn">
+                            <i class="fas fa-plus"></i> Add Student
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table id="students-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th>Group</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-tbody"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Groups Section -->
+                <section id="groups-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Manage Groups</h2>
+                        <button class="btn btn-primary" id="add-group-btn">
+                            <i class="fas fa-plus"></i> Create Group
+                        </button>
+                    </div>
+                    <div id="groups-container" class="groups-grid"></div>
+                </section>
+
+                <!-- Payments Section -->
+                <section id="payments-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Payment History</h2>
+                        <button class="btn btn-primary" id="add-payment-btn">
+                            <i class="fas fa-plus"></i> Record Payment
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table id="payments-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Group</th>
+                                    <th>Paid By</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payments-tbody"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Notifications Section -->
+                <section id="notifications-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Send Notifications</h2>
+                    </div>
+                    <div class="notification-form">
+                        <div class="form-group">
+                            <label for="notif-target">Send To</label>
+                            <select id="notif-target">
+                                <option value="all">All Students</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="notif-message">Message</label>
+                            <textarea id="notif-message" rows="4" placeholder="Enter your notification message..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" id="send-notification-btn">
+                            <i class="fas fa-paper-plane"></i> Send Notification
+                        </button>
+                    </div>
+                    <div class="notification-history">
+                        <h3>Sent Notifications</h3>
+                        <div id="sent-notifications-list"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Dashboard -->
+    <div id="student-dashboard" class="page">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-utensils"></i>
+                <span>Canteen</span>
+            </div>
+            <div class="nav-user">
+                <span id="student-name">Student</span>
+                <div class="notification-bell" id="student-notif-bell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge" id="notif-badge">0</span>
+                </div>
+                <button id="student-logout" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+
+        <div class="student-container">
+            <div class="student-tabs">
+                <button class="tab-btn active" data-tab="my-turn">
+                    <i class="fas fa-calendar-day"></i> Today's Turn
+                </button>
+                <button class="tab-btn" data-tab="my-group">
+                    <i class="fas fa-users"></i> My Group
+                </button>
+                <button class="tab-btn" data-tab="payment-history">
+                    <i class="fas fa-history"></i> Payment History
+                </button>
+                <button class="tab-btn" data-tab="my-notifications">
+                    <i class="fas fa-bell"></i> Notifications
+                </button>
+            </div>
+
+            <div class="student-content">
+                <!-- Today's Turn Tab -->
+                <div id="my-turn-tab" class="tab-content active">
+                    <div class="turn-card">
+                        <h2>Today's Turn</h2>
+                        <div id="current-turn-info" class="turn-info">
+                            <p>Loading...</p>
+                        </div>
+                    </div>
+                    <div class="turn-schedule">
+                        <h3>Upcoming Turns</h3>
+                        <div id="turn-schedule-list"></div>
+                    </div>
+                </div>
+
+                <!-- My Group Tab -->
+                <div id="my-group-tab" class="tab-content">
+                    <div class="group-info-card">
+                        <h2 id="my-group-name">My Group</h2>
+                        <div id="group-members-list" class="members-list"></div>
+                    </div>
+                </div>
+
+                <!-- Payment History Tab -->
+                <div id="payment-history-tab" class="tab-content">
+                    <h2>Group Payment History</h2>
+                    <div id="student-payments-list" class="payments-list"></div>
+                </div>
+
+                <!-- Notifications Tab -->
+                <div id="my-notifications-tab" class="tab-content">
+                    <h2>My Notifications</h2>
+                    <div id="student-notifications-list" class="notifications-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Student Modal -->
+    <div id="student-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="student-modal-title">Add Student</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="student-form">
+                <div class="form-group">
+                    <label for="student-name-input">Name</label>
+                    <input type="text" id="student-name-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-email-input">Email</label>
+                    <input type="email" id="student-email-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-role-select">Role</label>
+                    <select id="student-role-select">
+                        <option value="student">Student</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="student-phone-input">Phone (optional)</label>
+                    <input type="tel" id="student-phone-input" placeholder="e.g. +1234567890">
+                </div>
+                <div class="form-group">
+                    <label>Assign to Groups</label>
+                    <div id="student-groups-checkboxes" class="checkbox-group"></div>
+                </div>
+                <div class="form-group">
+                    <label for="student-photo-input">Profile Photo (optional)</label>
+                    <input type="file" id="student-photo-input" accept="image/*">
+                    <div id="student-photo-preview" style="margin-top:10px"></div>
+                </div>
+                <div class="form-group">
+                    <label for="student-password-input">Password</label>
+                    <input type="password" id="student-password-input" required minlength="6">
+                </div>
+                <input type="hidden" id="student-id-input">
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Group Modal -->
+    <div id="group-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="group-modal-title">Create Group</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="group-form">
+                <div class="form-group">
+                    <label for="group-name-input">Group Name</label>
+                    <input type="text" id="group-name-input" required>
+                </div>
+                <div class="form-group">
+                    <label>Select Members</label>
+                    <div id="member-checkboxes" class="checkbox-group"></div>
+                </div>
+                <input type="hidden" id="group-id-input">
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Payment Modal -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Record Payment</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label for="payment-group">Group</label>
+                    <select id="payment-group" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="payment-student">Paid By</label>
+                    <select id="payment-student" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="payment-amount">Amount</label>
+                    <input type="number" id="payment-amount" required min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="payment-date">Date</label>
+                    <input type="date" id="payment-date" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Student Notifications Modal -->
+    <div id="notifications-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Notifications</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="notifications-modal-list" class="notifications-modal-list"></div>
+        </div>
+    </div>
+
+    <!-- Arrange Turn Modal -->
+    <div id="arrange-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Arrange Turn Sequence</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div style="padding:20px;">
+                <p>Drag and drop members to set the turn order.</p>
+                <input type="hidden" id="arrange-group-id">
+                <div id="arrange-members-list" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow:auto;padding-top:10px;"></div>
+                <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:15px;">
+                    <button class="btn btn-secondary modal-cancel">Cancel</button>
+                    <button class="btn btn-primary" id="save-arrange-btn">Save Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="profile-form" style="padding:20px;">
+                <div class="form-group">
+                    <label for="profile-name-input">Name</label>
+                    <input type="text" id="profile-name-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-phone-input">Phone (optional)</label>
+                    <input type="tel" id="profile-phone-input" placeholder="e.g. +1234567890">
+                </div>
+                <div class="form-group">
+                    <label for="profile-photo-input">Profile Photo (optional)</label>
+                    <input type="file" id="profile-photo-input" accept="image/*">
+                    <div id="profile-photo-preview" style="margin-top:10px"></div>
+                </div>
+                <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:15px;">
+                    <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Notification Modal (Admin) -->
+    <div id="edit-notif-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Notification</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="edit-notif-form" style="padding:20px;">
+                <div class="form-group">
+                    <label for="edit-notif-target">Send To</label>
+                    <select id="edit-notif-target"></select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-notif-message">Message</label>
+                    <textarea id="edit-notif-message" rows="4" required></textarea>
+                </div>
+                <input type="hidden" id="edit-notif-id">
+                <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:15px;">
+                    <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <script src="app.js"></script>
+<style>
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --secondary-color: #64748b;
+    --success-color: #22c55e;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --background: #f1f5f9;
+    --card-bg: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    min-height: 100vh;
+}
+
+/* Page Management */
+.page {
+    display: none;
+    min-height: 100vh;
+}
+
+.page.active {
+    display: block;
+}
+
+/* Notification Container */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: var(--card-bg);
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+    max-width: 350px;
+}
+
+.toast.success {
+    border-left: 4px solid var(--success-color);
+}
+
+.toast.error {
+    border-left: 4px solid var(--danger-color);
+}
+
+.toast.info {
+    border-left: 4px solid var(--primary-color);
+}
+
+.toast.warning {
+    border-left: 4px solid var(--warning-color);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Login Page */
+.login-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.logo-icon {
+    font-size: 60px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.login-header h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.login-header p {
+    color: var(--text-secondary);
+}
+
+#login-form {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background: #d1d5db;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-small {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.btn-logout {
+    background: transparent;
+    color: white;
+    padding: 8px;
+}
+
+.btn-logout:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Navbar */
+.navbar {
+    background: var(--primary-color);
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.notif-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--danger-color);
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+    display: flex;
+    min-height: calc(100vh - 60px);
+}
+
+.sidebar {
+    width: 250px;
+    background: var(--card-bg);
+    padding: 20px;
+    border-right: 1px solid var(--border-color);
+}
+
+.sidebar-btn {
+    width: 100%;
+    padding: 15px 20px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font-size: 16px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-btn:hover {
+    background: var(--background);
+    color: var(--text-primary);
+}
+
+.sidebar-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/* Content Sections */
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.section-header h2 {
+    font-size: 24px;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.stat-card i {
+    font-size: 40px;
+    color: var(--primary-color);
+}
+
+.stat-card i.online {
+    color: var(--success-color);
+}
+
+.stat-info h3 {
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.stat-info p {
+    color: var(--text-secondary);
+}
+
+/* Tables */
+.table-container {
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background: var(--background);
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+tr:hover {
+    background: var(--background);
+}
+
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-badge.online {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.offline {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.action-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn.edit {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.action-btn.delete {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Groups Grid */
+.groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.group-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.group-card-header {
+    background: var(--primary-color);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.group-card-header h3 {
+    font-size: 18px;
+}
+
+.group-card-body {
+    padding: 20px;
+}
+
+.member-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    background: var(--background);
+}
+
+.member-item.current-turn {
+    background: #dcfce7;
+    border: 2px solid var(--success-color);
+}
+
+.member-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.member-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.member-avatar img, .member-avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+} 
+
+.member-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d1d5db;
+}
+
+.member-status.online {
+    background: var(--success-color);
+}
+
+.group-card-footer {
+    padding: 15px 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+}
+
+/* Online List */
+.online-list {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.online-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+}
+
+.online-item:hover {
+    background: var(--background);
+}
+
+.online-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--success-color);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Notification Form */
+.notification-form {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+}
+
+.notification-form .btn {
+    width: auto;
+}
+
+.notification-history h3 {
+    margin-bottom: 20px;
+}
+
+#sent-notifications-list {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.notification-item {
+    padding: 15px;
+    border-radius: 10px;
+    background: var(--background);
+    margin-bottom: 10px;
+}
+
+.notification-item-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalSlide 0.3s ease;
+}
+
+@keyframes modalSlide {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+.modal-content form {
+    padding: 20px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.modal-actions .btn {
+    width: auto;
+}
+
+.checkbox-group {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.checkbox-item:hover {
+    background: var(--background);
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+/* Student Dashboard */
+.student-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.student-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 12px 20px;
+    border: none;
+    background: var(--card-bg);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+}
+
+.tab-btn:hover {
+    background: var(--background);
+}
+
+.tab-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.turn-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.turn-info {
+    margin-top: 20px;
+}
+
+.turn-info .current-payer {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.turn-info .is-your-turn {
+    background: var(--success-color);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 18px;
+    display: inline-block;
+    animation: pulse 2s infinite;
+}
+
+.turn-schedule {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.turn-schedule h3 {
+    margin-bottom: 20px;
+}
+
+.schedule-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background: var(--background);
+}
+
+.schedule-item.today {
+    background: #dbeafe;
+    border: 2px solid var(--primary-color);
+}
+
+.group-info-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+}
+
+.group-info-card h2 {
+    margin-bottom: 20px;
+}
+
+.members-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.member-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background: var(--background);
+    border-radius: 10px;
+}
+
+.member-card.current-turn {
+    background: #dcfce7;
+    border: 2px solid var(--success-color);
+}
+
+.payments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.payment-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.payment-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.payment-amount {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.notif-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.notif-card.unread {
+    border-left: 4px solid var(--primary-color);
+}
+
+.notif-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .sidebar-btn {
+        white-space: nowrap;
+        margin-bottom: 0;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .student-tabs {
+        justify-content: center;
+    }
+
+    .tab-btn {
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .navbar {
+        padding: 15px;
+    }
+
+    .nav-brand span {
+        display: none;
+    }
+}
+
+/* Loading Spinner */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 60px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+</style>
+<script>
+
+// Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyB1F13wvIQgqp2tMUNMHZn5XHQBFUQQhb4",
+    authDomain: "canteen-0.firebaseapp.com",
+    projectId: "canteen-0",
+    storageBucket: "canteen-0.firebasestorage.app",
+    messagingSenderId: "860127037966",
+    appId: "1:860127037966:web:e81207703cd74538068a5f",
+    measurementId: "G-WTTM6YNFQV"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+console.log('Firebase initialized');
+const auth = firebase.auth();
+const db = firebase.firestore();
+console.log('Auth & Firestore references created', { auth: !!auth, db: !!db });
+
+// Global error handler to catch runtime errors and show toasts for debugging
+window.addEventListener('error', (event) => {
+    console.error('Runtime error captured:', event.error || event.message || event);
+    try { showToast(`Error: ${event.error ? event.error.message : event.message}`, 'error'); } catch (e) { /* ignore */ }
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled Promise Rejection:', event.reason);
+    try { showToast(`Promise Rejection: ${event.reason && event.reason.message ? event.reason.message : event.reason}`, 'error'); } catch (e) { /* ignore */ }
+});
+
+// Global State
+let currentUser = null;
+let currentUserData = null;
+let unsubscribers = [];
+
+// DOM Elements
+const pages = {
+    login: document.getElementById('login-page'),
+    admin: document.getElementById('admin-dashboard'),
+    student: document.getElementById('student-dashboard')
+};
+
+// Utility Functions
+function showPage(pageName) {
+    Object.values(pages).forEach(page => page.classList.remove('active'));
+    pages[pageName].classList.add('active');
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('notification-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        info: 'fa-info-circle',
+        warning: 'fa-exclamation-triangle'
+    };
+    
+    toast.innerHTML = `
+        <i class="fas ${icons[type]}"></i>
+        <span>${message}</span>
+    `;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideIn 0.3s ease reverse';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+function formatDate(timestamp) {
+    if (!timestamp) return 'N/A';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function getInitials(name) {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+}
+
+// Modal Management
+function openModal(modalId) {
+    document.getElementById(modalId).classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+// Close modals when clicking outside or on close button
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+        }
+    });
+});
+
+// Helper: Resize image to dataURL
+function resizeImageToDataUrl(file, maxWidth = 800, maxHeight = 800, quality = 0.8) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+                let { width, height } = img;
+                const aspect = width / height;
+                if (width > maxWidth) {
+                    width = maxWidth;
+                    height = Math.round(width / aspect);
+                }
+                if (height > maxHeight) {
+                    height = maxHeight;
+                    width = Math.round(height * aspect);
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                resolve(dataUrl);
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Upload profile image to Firebase Storage and return download URL
+// Note: Works with Firebase free tier Storage; ensure your Storage rules allow authenticated uploads.
+// Phone number is stored as a simple field (no verification) to avoid extra quota and complexity.
+async function uploadProfileImage(file, userId) {
+    const dataUrl = await resizeImageToDataUrl(file, 800, 800, 0.8);
+    const storageRef = firebase.storage().ref(`profiles/${userId}/${Date.now()}_${file.name}`);
+    const snapshot = await storageRef.putString(dataUrl, 'data_url');
+    const url = await snapshot.ref.getDownloadURL();
+    return url;
+}
+
+// Student Profile Edit button in student nav
+const studentNav = document.querySelector('#student-dashboard .nav-user');
+if (studentNav) {
+    const btn = document.createElement('button');
+    btn.id = 'student-edit-profile';
+    btn.className = 'btn btn-small btn-secondary';
+    btn.innerHTML = '<i class="fas fa-user-edit"></i>';
+    studentNav.insertBefore(btn, studentNav.querySelector('#student-logout'));
+    btn.addEventListener('click', async () => {
+        // Populate form with current user data
+        const doc = await db.collection('users').doc(currentUser.uid).get();
+        const data = doc.data() || {};
+        document.getElementById('profile-name-input').value = data.name || '';
+        document.getElementById('profile-phone-input').value = data.phone || '';
+        document.getElementById('profile-photo-preview').innerHTML = data.photoURL ? `<img src="${data.photoURL}" style="width:80px;height:80px;border-radius:8px;object-fit:cover;">` : '';
+        openModal('profile-modal');
+    });
+}
+
+// Handle profile form submission for student self-edit
+document.getElementById('profile-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('profile-name-input').value;
+    const phone = document.getElementById('profile-phone-input').value;
+    const photoFile = document.getElementById('profile-photo-input').files[0];
+
+    try {
+        const updateData = { name, phone };
+        if (photoFile) {
+            const url = await uploadProfileImage(photoFile, currentUser.uid);
+            updateData.photoURL = url;
+        }
+        await db.collection('users').doc(currentUser.uid).update(updateData);
+        // Update local cache/UI
+        if (currentUserData && currentUserData.id === currentUser.uid) {
+            currentUserData = { ...currentUserData, ...updateData };
+            document.getElementById('student-name').textContent = currentUserData.name || '';
+        }
+        showToast('Profile updated!', 'success');
+        closeModal('profile-modal');
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+});
+
+// Show previews when selecting photo in student modal or profile modal
+['student-photo-input','profile-photo-input'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            const previewId = id === 'student-photo-input' ? 'student-photo-preview' : 'profile-photo-preview';
+            document.getElementById(previewId).innerHTML = `<img src="${evt.target.result}" style="width:80px;height:80px;border-radius:8px;object-fit:cover;">`;
+        };
+        reader.readAsDataURL(file);
+    });
+});
+
+document.querySelectorAll('.modal-close, .modal-cancel').forEach(btn => {
+    btn.addEventListener('click', () => {
+        btn.closest('.modal').classList.remove('active');
+    });
+});
+
+// Authentication
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    console.log('Login attempt for', email);
+    
+    try {
+        await auth.signInWithEmailAndPassword(email, password);
+        console.log('signInWithEmailAndPassword resolved for', email);
+        showToast('Login successful!', 'success');
+    } catch (error) {
+        console.error('Login failed:', error);
+        showToast(error.message, 'error');
+    }
+});
+
+// Auth State Observer
+auth.onAuthStateChanged(async (user) => {
+    console.log('Auth state changed:', user && user.uid ? user.uid : null, user && user.email ? user.email : null);
+    if (user) {
+        currentUser = user;
+        
+        // Get user data from Firestore
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        
+        if (userDoc.exists) {
+            currentUserData = { id: user.uid, ...userDoc.data() };
+            
+            // Update online status
+            await db.collection('users').doc(user.uid).update({
+                online: true,
+                lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            // Set offline on disconnect
+            window.addEventListener('beforeunload', () => {
+                db.collection('users').doc(user.uid).update({
+                    online: false,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            });
+            
+            if (currentUserData.role === 'admin') {
+                showPage('admin');
+                document.getElementById('admin-name').textContent = currentUserData.name;
+                initAdminDashboard();
+            } else {
+                showPage('student');
+                // Show name and avatar if available
+                const studentNameEl = document.getElementById('student-name');
+                if (currentUserData.photoURL) {
+                    studentNameEl.innerHTML = `<img src="${currentUserData.photoURL}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;vertical-align:middle;"> ${currentUserData.name}`;
+                } else {
+                    studentNameEl.textContent = currentUserData.name;
+                }
+                initStudentDashboard();
+            }
+        } else {
+            // Create admin user if not exists
+            if (user.email === 'admin@canteen.com') {
+                await db.collection('users').doc(user.uid).set({
+                    name: 'Admin',
+                    email: user.email,
+                    role: 'admin',
+                    online: true,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                location.reload();
+            }
+        }
+    } else {
+        currentUser = null;
+        currentUserData = null;
+        showPage('login');
+        
+        // Unsubscribe from all listeners
+        unsubscribers.forEach(unsub => unsub());
+        unsubscribers = [];
+    }
+});
+
+// Logout handlers
+document.getElementById('admin-logout').addEventListener('click', async () => {
+    await db.collection('users').doc(currentUser.uid).update({ online: false });
+    await auth.signOut();
+});
+
+document.getElementById('student-logout').addEventListener('click', async () => {
+    await db.collection('users').doc(currentUser.uid).update({ online: false });
+    await auth.signOut();
+});
+
+// Initialize Admin on First Run
+async function initializeAdmin() {
+    try {
+        const adminQuery = await db.collection('users').where('role', '==', 'admin').get();
+        
+        if (adminQuery.empty) {
+            // Create admin user
+            const adminCredential = await auth.createUserWithEmailAndPassword('admin@canteen.com', 'admin123');
+            await db.collection('users').doc(adminCredential.user.uid).set({
+                name: 'Admin',
+                email: 'admin@canteen.com',
+                role: 'admin',
+                online: false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            console.log('Admin user created');
+        }
+    } catch (error) {
+        console.log('Admin might already exist');
+    }
+}
+
+initializeAdmin();
+
+// ==================== ADMIN DASHBOARD ====================
+
+function initAdminDashboard() {
+    loadDashboardStats();
+    loadStudents();
+    loadGroups();
+    loadPayments();
+    loadNotifications();
+    setupAdminListeners();
+}
+
+// Sidebar Navigation
+document.querySelectorAll('.sidebar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const section = btn.dataset.section;
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`${section}-section`).classList.add('active');
+    });
+});
+
+// Load Dashboard Stats
+function loadDashboardStats() {
+    // Total Students
+    const studentsUnsub = db.collection('users')
+        .where('role', '==', 'student')
+        .onSnapshot(snapshot => {
+            document.getElementById('total-students').textContent = snapshot.size;
+        });
+    unsubscribers.push(studentsUnsub);
+    
+    // Total Groups
+    const groupsUnsub = db.collection('groups').onSnapshot(snapshot => {
+        document.getElementById('total-groups').textContent = snapshot.size;
+    });
+    unsubscribers.push(groupsUnsub);
+    
+    // Online Users
+    const onlineUnsub = db.collection('users')
+        .where('online', '==', true)
+        .onSnapshot(snapshot => {
+            document.getElementById('online-users').textContent = snapshot.size;
+            
+            // Update online students list
+            const list = document.getElementById('online-students-list');
+            if (snapshot.empty) {
+                list.innerHTML = '<p class="empty-state">No students online</p>';
+            } else {
+                list.innerHTML = snapshot.docs
+                    .filter(doc => doc.data().role === 'student')
+                    .map(doc => {
+                        const data = doc.data();
+                        return `
+                            <div class="online-item">
+                                <span class="online-dot"></span>
+                                <span>${data.name}</span>
+                            </div>
+                        `;
+                    }).join('');
+            }
+        });
+    unsubscribers.push(onlineUnsub);
+    
+    // Total Payments
+    const paymentsUnsub = db.collection('payments').onSnapshot(snapshot => {
+        document.getElementById('total-payments').textContent = snapshot.size;
+    });
+    unsubscribers.push(paymentsUnsub);
+}
+
+// ==================== STUDENTS MANAGEMENT ====================
+
+function loadStudents() {
+    const unsub = db.collection('users')
+        .where('role', '==', 'student')
+        .onSnapshot(async snapshot => {
+            const tbody = document.getElementById('students-tbody');
+            
+            if (snapshot.empty) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No students found</td></tr>';
+                return;
+            }
+            
+            // Get groups for each student
+            const groupsSnapshot = await db.collection('groups').get();
+            const groups = {};
+            groupsSnapshot.docs.forEach(doc => {
+                const data = doc.data();
+                data.members.forEach(memberId => {
+                    groups[memberId] = data.name;
+                });
+            });
+            
+            tbody.innerHTML = snapshot.docs.map(doc => {
+                const data = doc.data();
+                return `
+                    <tr>
+                        <td style="display:flex;align-items:center;gap:10px;">
+                            ${data.photoURL ? `<img src="${data.photoURL}" alt="${data.name}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">` : `<div class="member-avatar">${getInitials(data.name)}</div>`}
+                            <span>${data.name}</span>
+                        </td>
+                        <td>${data.email}</td>
+                        <td>${data.phone || ''}</td>
+                        <td>
+                            <span class="status-badge ${data.online ? 'online' : 'offline'}">
+                                ${data.online ? 'Online' : 'Offline'}
+                            </span>
+                        </td>
+                        <td>${groups[doc.id] || 'No Group'}</td>
+                        <td class="action-btns">
+                            <button class="action-btn edit" onclick="editStudent('${doc.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteStudent('${doc.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        });
+    unsubscribers.push(unsub);
+}
+
+// Add Student Button
+document.getElementById('add-student-btn').addEventListener('click', async () => {
+    document.getElementById('student-modal-title').textContent = 'Add Student';
+    document.getElementById('student-form').reset();
+    document.getElementById('student-id-input').value = '';
+    document.getElementById('student-password-input').required = true;
+    document.getElementById('student-role-select').value = 'student';
+
+    // Load groups for checkbox assignment
+    const groupsSnapshot = await db.collection('groups').get();
+    const container = document.getElementById('student-groups-checkboxes');
+    if (groupsSnapshot.empty) {
+        container.innerHTML = '<p>No groups available.</p>';
+    } else {
+        container.innerHTML = groupsSnapshot.docs.map(doc => {
+            return `
+                <label class="checkbox-item">
+                    <input type="checkbox" name="student-group" value="${doc.id}">
+                    <span>${doc.data().name}</span>
+                </label>
+            `;
+        }).join('');
+    }
+
+    openModal('student-modal');
+});
+
+// Student Form Submit
+document.getElementById('student-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('student-name-input').value;
+    const email = document.getElementById('student-email-input').value;
+    const phone = document.getElementById('student-phone-input').value;
+    const photoFile = document.getElementById('student-photo-input').files[0];
+    const password = document.getElementById('student-password-input').value;
+    const studentId = document.getElementById('student-id-input').value;
+    
+    try {
+        if (studentId) {
+            // Update existing student
+            const updateData = { name, email, phone, role: document.getElementById('student-role-select').value };
+            if (photoFile) {
+                const url = await uploadProfileImage(photoFile, studentId);
+                updateData.photoURL = url;
+            }
+            await db.collection('users').doc(studentId).update(updateData);
+
+            // Update group memberships based on checkboxes
+            const checked = Array.from(document.querySelectorAll('input[name="student-group"]:checked')).map(cb => cb.value);
+            const groupsSnapshot = await db.collection('groups').get();
+            for (const gdoc of groupsSnapshot.docs) {
+                const gdata = gdoc.data();
+                const inChecked = checked.includes(gdoc.id);
+                const currentlyIn = (gdata.members || []).includes(studentId);
+                if (inChecked && !currentlyIn) {
+                    await db.collection('groups').doc(gdoc.id).update({ members: firebase.firestore.FieldValue.arrayUnion(studentId) });
+                } else if (!inChecked && currentlyIn) {
+                    await db.collection('groups').doc(gdoc.id).update({ members: firebase.firestore.FieldValue.arrayRemove(studentId) });
+                }
+            }
+
+            showToast('Student updated successfully!', 'success');
+        } else {
+            // Create new student
+            const credential = await auth.createUserWithEmailAndPassword(email, password);
+            const userId = credential.user.uid;
+            const roleVal = document.getElementById('student-role-select').value || 'student';
+            const userData = {
+                name,
+                email,
+                phone: phone || '',
+                role: roleVal,
+                online: false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                createdBy: currentUser.uid
+            };
+            if (photoFile) {
+                const url = await uploadProfileImage(photoFile, userId);
+                userData.photoURL = url;
+            }
+            await db.collection('users').doc(userId).set(userData);
+
+            // Add to selected groups
+            const checked = Array.from(document.querySelectorAll('input[name="student-group"]:checked')).map(cb => cb.value);
+            for (const gid of checked) {
+                await db.collection('groups').doc(gid).update({ members: firebase.firestore.FieldValue.arrayUnion(userId) });
+            }
+
+            // Re-login as admin
+            await auth.signInWithEmailAndPassword(currentUserData.email, 'admin123');
+            showToast('Student created successfully!', 'success');
+        }
+        
+        closeModal('student-modal');
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+});
+
+// Edit Student
+window.editStudent = async (studentId) => {
+    const doc = await db.collection('users').doc(studentId).get();
+    const data = doc.data();
+    
+    document.getElementById('student-modal-title').textContent = 'Edit Student';
+    document.getElementById('student-name-input').value = data.name;
+    document.getElementById('student-email-input').value = data.email;
+    document.getElementById('student-phone-input').value = data.phone || '';
+    document.getElementById('student-password-input').value = '';
+    document.getElementById('student-password-input').required = false;
+    document.getElementById('student-id-input').value = studentId;
+    document.getElementById('student-role-select').value = data.role || 'student';
+
+    const preview = document.getElementById('student-photo-preview');
+    preview.innerHTML = data.photoURL ? `<img src="${data.photoURL}" style="width:80px;height:80px;border-radius:8px;object-fit:cover;">` : '';
+    
+    // Load groups and mark ones which include this student
+    const groupsSnapshot = await db.collection('groups').get();
+    const container = document.getElementById('student-groups-checkboxes');
+    if (groupsSnapshot.empty) {
+        container.innerHTML = '<p>No groups available.</p>';
+    } else {
+        container.innerHTML = groupsSnapshot.docs.map(gdoc => {
+            const gdata = gdoc.data();
+            const checked = (gdata.members || []).includes(studentId) ? 'checked' : '';
+            return `
+                <label class="checkbox-item">
+                    <input type="checkbox" name="student-group" value="${gdoc.id}" ${checked}>
+                    <span>${gdata.name}</span>
+                </label>
+            `;
+        }).join('');
+    }
+
+    openModal('student-modal');
+};
+
+// Delete Student
+window.deleteStudent = async (studentId) => {
+    if (confirm('Are you sure you want to delete this student?')) {
+        try {
+            await db.collection('users').doc(studentId).delete();
+            
+            // Remove from groups
+            const groupsSnapshot = await db.collection('groups').get();
+            groupsSnapshot.docs.forEach(async doc => {
+                const data = doc.data();
+                if (data.members.includes(studentId)) {
+                    await db.collection('groups').doc(doc.id).update({
+                        members: firebase.firestore.FieldValue.arrayRemove(studentId)
+                    });
+                }
+            });
+            
+            showToast('Student deleted successfully!', 'success');
+        } catch (error) {
+            showToast(error.message, 'error');
+        }
+    }
+};
+
+// ==================== GROUPS MANAGEMENT ====================
+
+function loadGroups() {
+    const unsub = db.collection('groups').onSnapshot(async snapshot => {
+        const container = document.getElementById('groups-container');
+        
+        if (snapshot.empty) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-layer-group"></i><p>No groups created yet</p></div>';
+            return;
+        }
+        
+        // Get all students
+        const studentsSnapshot = await db.collection('users').where('role', '==', 'student').get();
+        const students = {};
+        studentsSnapshot.docs.forEach(doc => {
+            students[doc.id] = doc.data();
+        });
+        
+        container.innerHTML = snapshot.docs.map(doc => {
+            const data = doc.data();
+            const currentTurnIndex = data.currentTurnIndex || 0;
+            
+            return `
+                <div class="group-card">
+                    <div class="group-card-header">
+                        <h3>${data.name}</h3>
+                        <span>${data.members.length} members</span>
+                    </div>
+                    <div class="group-card-body">
+                        ${data.members.map((memberId, index) => {
+                            const member = students[memberId];
+                            if (!member) return '';
+                            return `
+                                <div class="member-item ${index === currentTurnIndex ? 'current-turn' : ''}">
+                                    <div class="member-info">
+                                        ${member.photoURL ? `<img src="${member.photoURL}" alt="${member.name}" class="member-avatar-img">` : `<div class="member-avatar">${getInitials(member.name)}</div>`}
+                                        <div>
+                                            <strong>${member.name}</strong>
+                                            ${index === currentTurnIndex ? '<span style="color: var(--success-color);"> (Today\'s Turn)</span>' : ''}
+                                        </div>
+                                    </div>
+                                    <span class="member-status ${member.online ? 'online' : ''}"></span>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div class="group-card-footer">
+                        <button class="btn btn-small btn-primary" onclick="rotateTurn('${doc.id}')">
+                            <i class="fas fa-sync"></i> Rotate Turn
+                        </button>
+                        <button class="btn btn-small btn-success" onclick="arrangeTurn('${doc.id}')">
+                            <i class="fas fa-arrows-alt-v"></i> Arrange Turn
+                        </button>
+                        <button class="btn btn-small btn-secondary" onclick="editGroup('${doc.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-small btn-danger" onclick="deleteGroup('${doc.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        // Update notification target select
+        const notifSelect = document.getElementById('notif-target');
+        notifSelect.innerHTML = '<option value="all">All Students</option>' +
+            snapshot.docs.map(doc => `<option value="${doc.id}">${doc.data().name}</option>`).join('');
+    });
+    unsubscribers.push(unsub);
+}
+
+// Add Group Button
+document.getElementById('add-group-btn').addEventListener('click', async () => {
+    document.getElementById('group-modal-title').textContent = 'Create Group';
+    document.getElementById('group-form').reset();
+    document.getElementById('group-id-input').value = '';
+    
+    // Load available students
+    const studentsSnapshot = await db.collection('users').where('role', '==', 'student').get();
+    const checkboxContainer = document.getElementById('member-checkboxes');
+    
+    if (studentsSnapshot.empty) {
+        checkboxContainer.innerHTML = '<p>No students available. Create students first.</p>';
+    } else {
+        checkboxContainer.innerHTML = studentsSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return `
+                <label class="checkbox-item">
+                    <input type="checkbox" name="members" value="${doc.id}">
+                    <span>${data.name} (${data.email})</span>
+                </label>
+            `;
+        }).join('');
+    }
+    
+    openModal('group-modal');
+});
+
+// Group Form Submit
+document.getElementById('group-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('group-name-input').value;
+    const groupId = document.getElementById('group-id-input').value;
+    const memberCheckboxes = document.querySelectorAll('input[name="members"]:checked');
+    const members = Array.from(memberCheckboxes).map(cb => cb.value);
+    
+    if (members.length < 2) {
+        showToast('Please select at least 2 members', 'warning');
+        return;
+    }
+    
+    try {
+        if (groupId) {
+            // Update existing group
+            await db.collection('groups').doc(groupId).update({ name, members });
+            showToast('Group updated successfully!', 'success');
+        } else {
+            // Create new group
+            await db.collection('groups').add({
+                name,
+                members,
+                currentTurnIndex: 0,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                createdBy: currentUser.uid
+            });
+            showToast('Group created successfully!', 'success');
+        }
+        
+        closeModal('group-modal');
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+});
+
+// Edit Group
+window.editGroup = async (groupId) => {
+    const doc = await db.collection('groups').doc(groupId).get();
+    const data = doc.data();
+    
+    document.getElementById('group-modal-title').textContent = 'Edit Group';
+    document.getElementById('group-name-input').value = data.name;
+    document.getElementById('group-id-input').value = groupId;
+    
+    // Load students and check the ones in group
+    const studentsSnapshot = await db.collection('users').where('role', '==', 'student').get();
+    const checkboxContainer = document.getElementById('member-checkboxes');
+    
+    checkboxContainer.innerHTML = studentsSnapshot.docs.map(doc => {
+        const studentData = doc.data();
+        const isChecked = data.members.includes(doc.id);
+        return `
+            <label class="checkbox-item">
+                <input type="checkbox" name="members" value="${doc.id}" ${isChecked ? 'checked' : ''}>
+                <span>${studentData.name} (${studentData.email})</span>
+            </label>
+        `;
+    }).join('');
+    
+    openModal('group-modal');
+};
+
+// Delete Group
+window.deleteGroup = async (groupId) => {
+    if (confirm('Are you sure you want to delete this group?')) {
+        try {
+            await db.collection('groups').doc(groupId).delete();
+            showToast('Group deleted successfully!', 'success');
+        } catch (error) {
+            showToast(error.message, 'error');
+        }
+    }
+};
+
+// Rotate Turn
+window.rotateTurn = async (groupId) => {
+    try {
+        const doc = await db.collection('groups').doc(groupId).get();
+        const data = doc.data();
+        const newIndex = (data.currentTurnIndex + 1) % data.members.length;
+        
+        await db.collection('groups').doc(groupId).update({
+            currentTurnIndex: newIndex
+        });
+        
+        // Get the new person's name and send notification
+        const newPersonDoc = await db.collection('users').doc(data.members[newIndex]).get();
+        const newPersonName = newPersonDoc.data().name;
+        
+        // Create notification
+        await db.collection('notifications').add({
+            message: `It's now ${newPersonName}'s turn to pay in ${data.name}!`,
+            groupId: groupId,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            createdBy: currentUser.uid
+        });
+        
+        showToast('Turn rotated successfully!', 'success');
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+};
+
+// Arrange Turn - open modal and populate members list with drag-and-drop
+window.arrangeTurn = async (groupId) => {
+    try {
+        const doc = await db.collection('groups').doc(groupId).get();
+        const data = doc.data();
+        const members = data.members || [];
+
+        // Load students map
+        const studentsSnapshot = await db.collection('users').where('role', '==', 'student').get();
+        const students = {};
+        studentsSnapshot.docs.forEach(d => students[d.id] = d.data());
+
+        const list = document.getElementById('arrange-members-list');
+        list.innerHTML = members.map((id, idx) => {
+            const member = students[id] || { name: 'Unknown' };
+            const avatar = member.photoURL ? `<img src="${member.photoURL}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">` : `<div class="member-avatar">${getInitials(member.name)}</div>`;
+            return `
+                <div class="arrange-item" draggable="true" data-id="${id}" style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--background);border-radius:8px;">
+                    <span class="drag-handle" style="cursor:grab;color:var(--text-secondary);"><i class="fas fa-grip-lines"></i></span>
+                    ${avatar}
+                    <strong style="flex:1">${member.name}</strong>
+                    ${idx === (data.currentTurnIndex || 0) ? '<em style="color:var(--success-color);">(Current)</em>' : ''}
+                </div>
+            `;
+        }).join('');
+
+        document.getElementById('arrange-group-id').value = groupId;
+        openModal('arrange-modal');
+        enableArrangeDrag();
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+};
+
+function enableArrangeDrag() {
+    const list = document.getElementById('arrange-members-list');
+    let dragEl = null;
+
+    list.querySelectorAll('.arrange-item').forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            dragEl = item;
+            item.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+
+        item.addEventListener('dragend', () => {
+            if (dragEl) dragEl.classList.remove('dragging');
+            dragEl = null;
+        });
+    });
+
+    list.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const after = getDragAfterElement(list, e.clientY);
+        if (!dragEl) return;
+        if (after == null) list.appendChild(dragEl);
+        else list.insertBefore(dragEl, after);
+    });
+}
+
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.arrange-item:not(.dragging)')];
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+// Save arranged order
+document.getElementById('save-arrange-btn').addEventListener('click', async () => {
+    try {
+        const groupId = document.getElementById('arrange-group-id').value;
+        const orderEls = document.querySelectorAll('#arrange-members-list .arrange-item');
+        const newOrder = Array.from(orderEls).map(el => el.dataset.id);
+
+        const doc = await db.collection('groups').doc(groupId).get();
+        const data = doc.data();
+        const prevCurrentMember = (data.members || [])[data.currentTurnIndex] || null;
+        let newIndex = 0;
+        if (prevCurrentMember) {
+            const idx = newOrder.indexOf(prevCurrentMember);
+            newIndex = idx !== -1 ? idx : 0;
+        }
+
+        await db.collection('groups').doc(groupId).update({ members: newOrder, currentTurnIndex: newIndex });
+        closeModal('arrange-modal');
+        showToast('Turn sequence updated!', 'success');
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+});
+
+// ==================== PAYMENTS MANAGEMENT ====================
+
+function loadPayments() {
+    const unsub = db.collection('payments')
+        .orderBy('date', 'desc')
+        .onSnapshot(async snapshot => {
+            const tbody = document.getElementById('payments-tbody');
+            
+            if (snapshot.empty) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No payments recorded</td></tr>';
+                return;
+            }
+            
+            // Get all students and groups
+            const studentsSnapshot = await db.collection('users').get();
+            const students = {};
+            studentsSnapshot.docs.forEach(doc => {
+                students[doc.id] = doc.data();
+            });
+            
+            const groupsSnapshot = await db.collection('groups').get();
+            const groups = {};
+            groupsSnapshot.docs.forEach(doc => {
+                groups[doc.id] = doc.data();
+            });
+            
+            tbody.innerHTML = snapshot.docs.map(doc => {
+                const data = doc.data();
+                const payer = students[data.paidBy];
+                const group = groups[data.groupId];
+                
+                return `
+                    <tr>
+                        <td>${formatDate(data.date)}</td>
+                        <td>${group ? group.name : 'Unknown'}</td>
+                        <td>${payer ? payer.name : 'Unknown'}</td>
+                        <td>$${data.amount.toFixed(2)}</td>
+                        <td class="action-btns">
+                            <button class="action-btn delete" onclick="deletePayment('${doc.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        });
+    unsubscribers.push(unsub);
+}
+
+// Add Payment Button
+document.getElementById('add-payment-btn').addEventListener('click', async () => {
+    // Load groups
+    const groupsSnapshot = await db.collection('groups').get();
+    const groupSelect = document.getElementById('payment-group');
+    groupSelect.innerHTML = '<option value="">Select Group</option>' +
+        groupsSnapshot.docs.map(doc => `<option value="${doc.id}">${doc.data().name}</option>`).join('');
+    
+    document.getElementById('payment-date').valueAsDate = new Date();
+    document.getElementById('payment-form').reset();
+    document.getElementById('payment-date').valueAsDate = new Date();
+    
+    openModal('payment-modal');
+});
+
+// Update student dropdown when group is selected
+document.getElementById('payment-group').addEventListener('change', async (e) => {
+    const groupId = e.target.value;
+    const studentSelect = document.getElementById('payment-student');
+    
+    if (!groupId) {
+        studentSelect.innerHTML = '<option value="">Select Group First</option>';
+        return;
+    }
+    
+    const groupDoc = await db.collection('groups').doc(groupId).get();
+    const groupData = groupDoc.data();
+    
+    // Get member details
+    const studentOptions = await Promise.all(groupData.members.map(async memberId => {
+        const memberDoc = await db.collection('users').doc(memberId).get();
+        const memberData = memberDoc.data();
+        return `<option value="${memberId}">${memberData.name}</option>`;
+    }));
+    
+    studentSelect.innerHTML = '<option value="">Select Student</option>' + studentOptions.join('');
+});
+
+// Payment Form Submit
+document.getElementById('payment-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const groupId = document.getElementById('payment-group').value;
+    const paidBy = document.getElementById('payment-student').value;
+    const amount = parseFloat(document.getElementById('payment-amount').value);
+    const date = document.getElementById('payment-date').value;
+    
+    try {
+        await db.collection('payments').add({
+            groupId,
+            paidBy,
+            amount,
+            date: firebase.firestore.Timestamp.fromDate(new Date(date)),
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            createdBy: currentUser.uid
+        });
+        
+        showToast('Payment recorded successfully!', 'success');
+        closeModal('payment-modal');
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+});
+
+// Delete Payment
+window.deletePayment = async (paymentId) => {
+    if (confirm('Are you sure you want to delete this payment record?')) {
+        try {
+            await db.collection('payments').doc(paymentId).delete();
+            showToast('Payment deleted successfully!', 'success');
+        } catch (error) {
+            showToast(error.message, 'error');
+        }
+    }
+};
+
+// ==================== NOTIFICATIONS ====================
+
+function loadNotifications() {
+    const unsub = db.collection('notifications')
+        .orderBy('createdAt', 'desc')
+        .limit(50)
+        .onSnapshot(snapshot => {
+            const list = document.getElementById('sent-notifications-list');
+            
+            if (snapshot.empty) {
+                list.innerHTML = '<p class="empty-state">No notifications sent yet</p>';
+                return;
+            }
+            
+            list.innerHTML = snapshot.docs.map(doc => {
+                const data = doc.data();
+                return `
+                    <div class="notification-item">
+                        <div class="notification-item-header">
+                            <span>${data.target === 'all' ? 'All Students' : data.groupName || 'Group'}</span>
+                            <span>${formatDate(data.createdAt)}</span>
+                        </div>
+                        <p>${data.message}</p>
+                        <div style="display:flex;gap:8px;margin-top:8px;">
+                            <button class="btn btn-small btn-secondary" onclick="openEditNotification('${doc.id}')"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteNotification('${doc.id}')"><i class="fas fa-trash"></i> Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        });
+    unsubscribers.push(unsub);
+}
+
+// Send Notification
+document.getElementById('send-notification-btn').addEventListener('click', async () => {
+    const target = document.getElementById('notif-target').value;
+    const message = document.getElementById('notif-message').value.trim();
+    
+    if (!message) {
+        showToast('Please enter a message', 'warning');
+        return;
+    }
+    
+    try {
+        let groupName = 'All Students';
+        let groupId = null;
+        if (target !== 'all') {
+            const groupDoc = await db.collection('groups').doc(target).get();
+            groupName = groupDoc.data().name;
+            groupId = target;
+        }
+        
+        await db.collection('notifications').add({
+            target,
+            groupName,
+            groupId,
+            message,
+            readBy: [],
+            dismissedBy: [],
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            createdBy: currentUser.uid
+        });
+        
+        document.getElementById('notif-message').value = '';
+        showToast('Notification sent successfully!', 'success');
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+});
+
+function openEditNotification(notifId) {
+    document.getElementById('edit-notif-id').value = notifId;
+    // Populate target select
+    const targetSelect = document.getElementById('edit-notif-target');
+    targetSelect.innerHTML = '<option value="all">All Students</option>';
+    db.collection('groups').get().then(snapshot => {
+        snapshot.docs.forEach(d => {
+            targetSelect.innerHTML += `<option value="${d.id}">${d.data().name}</option>`;
+        });
+    }).then(async () => {
+        const doc = await db.collection('notifications').doc(notifId).get();
+        const data = doc.data() || {};
+        document.getElementById('edit-notif-target').value = data.target || 'all';
+        document.getElementById('edit-notif-message').value = data.message || '';
+        openModal('edit-notif-modal');
+    });
+}
+
+// Save edited notification
+document.getElementById('edit-notif-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('edit-notif-id').value;
+    const target = document.getElementById('edit-notif-target').value;
+    const message = document.getElementById('edit-notif-message').value.trim();
+    try {
+        let groupName = 'All Students';
+        let groupId = null;
+        if (target !== 'all') {
+            const groupDoc = await db.collection('groups').doc(target).get();
+            groupName = groupDoc.data().name;
+            groupId = target;
+        }
+        await db.collection('notifications').doc(id).update({ target, groupName, groupId, message });
+        closeModal('edit-notif-modal');
+        showToast('Notification updated!', 'success');
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+});
+
+// Delete notification (admin)
+window.deleteNotification = async (notifId) => {
+    if (!confirm('Delete this notification for everyone?')) return;
+    try {
+        await db.collection('notifications').doc(notifId).delete();
+        showToast('Notification deleted from server!', 'success');
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+};
+
+function setupAdminListeners() {
+    // Real-time listener for new notifications to show toast
+    const unsub = db.collection('notifications')
+        .orderBy('createdAt', 'desc')
+        .limit(1)
+        .onSnapshot(snapshot => {
+            // Skip initial load
+            if (!snapshot.metadata.hasPendingWrites && snapshot.docChanges().length > 0) {
+                const change = snapshot.docChanges()[0];
+                if (change.type === 'added' && change.doc.data().createdBy !== currentUser.uid) {
+                    showToast('New notification received!', 'info');
+                }
+            }
+        });
+    unsubscribers.push(unsub);
+}
+
+// Student notification actions
+window.toggleNotificationRead = async (notifId) => {
+    try {
+        const doc = await db.collection('notifications').doc(notifId).get();
+        const data = doc.data() || {};
+        const readBy = data.readBy || [];
+        if (readBy.includes(currentUser.uid)) {
+            await db.collection('notifications').doc(notifId).update({
+                readBy: firebase.firestore.FieldValue.arrayRemove(currentUser.uid)
+            });
+            showToast('Marked as unread', 'info');
+        } else {
+            await db.collection('notifications').doc(notifId).update({
+                readBy: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+            });
+            showToast('Marked as read', 'success');
+        }
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+};
+
+window.dismissNotificationForMe = async (notifId) => {
+    if (!confirm('Dismiss this notification for you?')) return;
+    try {
+        await db.collection('notifications').doc(notifId).update({
+            dismissedBy: firebase.firestore.FieldValue.arrayUnion(currentUser.uid)
+        });
+        showToast('Notification dismissed for you', 'success');
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+};
+
+
+// ==================== STUDENT DASHBOARD ====================
+
+function initStudentDashboard() {
+    loadStudentGroup();
+    loadStudentPayments();
+    loadStudentNotifications();
+    setupStudentListeners();
+}
+
+// Tab Navigation
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const tab = btn.dataset.tab;
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById(`${tab}-tab`).classList.add('active');
+    });
+});
+
+// Load Student Group
+async function loadStudentGroup() {
+    // Find student's group
+    const groupsSnapshot = await db.collection('groups').get();
+    let myGroup = null;
+    let myGroupId = null;
+    
+    groupsSnapshot.docs.forEach(doc => {
+        const data = doc.data();
+        if (data.members.includes(currentUser.uid)) {
+            myGroup = data;
+            myGroupId = doc.id;
+        }
+    });
+    
+    if (!myGroup) {
+        document.getElementById('current-turn-info').innerHTML = `
+            <p style="color: var(--text-secondary);">You are not assigned to any group yet.</p>
+        `;
+        document.getElementById('my-group-name').textContent = 'No Group';
+        document.getElementById('group-members-list').innerHTML = '<p>You are not in any group</p>';
+        return;
+    }
+    
+    // Listen for group changes
+    const unsub = db.collection('groups').doc(myGroupId).onSnapshot(async snapshot => {
+        const data = snapshot.data();
+        if (!data) return;
+        
+        document.getElementById('my-group-name').textContent = data.name;
+        
+        // Get all members
+        const membersList = document.getElementById('group-members-list');
+        const turnInfo = document.getElementById('current-turn-info');
+        const scheduleList = document.getElementById('turn-schedule-list');
+        
+        const membersData = await Promise.all(data.members.map(async (memberId, index) => {
+            const memberDoc = await db.collection('users').doc(memberId).get();
+            return {
+                id: memberId,
+                ...memberDoc.data(),
+                isCurrentTurn: index === data.currentTurnIndex
+            };
+        }));
+        
+        // Current turn info
+        const currentPayer = membersData.find(m => m.isCurrentTurn);
+        const isMyTurn = currentPayer && currentPayer.id === currentUser.uid;
+        
+        turnInfo.innerHTML = `
+            <p class="current-payer">${currentPayer ? currentPayer.name : 'Unknown'}</p>
+            ${isMyTurn ? '<div class="is-your-turn">🎉 It\'s YOUR turn to pay today!</div>' : '<p>is paying today</p>'}
+        `;
+        
+        // Members list
+        membersList.innerHTML = membersData.map(member => `
+            <div class="member-card ${member.isCurrentTurn ? 'current-turn' : ''}">
+                <div class="member-info">
+                    <div class="member-avatar">${getInitials(member.name)}</div>
+                    <div>
+                        <strong>${member.name}</strong>
+                        ${member.id === currentUser.uid ? ' (You)' : ''}
+                        ${member.isCurrentTurn ? '<br><span style="color: var(--success-color);">Today\'s Turn</span>' : ''}
+                    </div>
+                </div>
+                <span class="status-badge ${member.online ? 'online' : 'offline'}">
+                    ${member.online ? 'Online' : 'Offline'}
+                </span>
+            </div>
+        `).join('');
+        
+        // Turn schedule
+        let scheduleHtml = '';
+        const currentIndex = data.currentTurnIndex;
+        for (let i = 0; i < membersData.length; i++) {
+            const index = (currentIndex + i) % membersData.length;
+            const member = membersData[index];
+            const dayLabel = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : `In ${i} days`;
+            scheduleHtml += `
+                <div class="schedule-item ${i === 0 ? 'today' : ''}">
+                    <span>${dayLabel}</span>
+                    <strong>${member.name}</strong>
+                </div>
+            `;
+        }
+        scheduleList.innerHTML = scheduleHtml;
+    });
+    unsubscribers.push(unsub);
+}
+// Load Student Payments (FIXED)
+// Load Student Payments (FIXED)
+function loadStudentPayments() {
+    // Find student's group first
+    db.collection('groups').get().then(groupsSnapshot => {
+        let myGroupId = null;
+        
+        groupsSnapshot.docs.forEach(doc => {
+            const data = doc.data();
+            if (data.members.includes(currentUser.uid)) {
+                myGroupId = doc.id;
+            }
+        });
+        
+        if (!myGroupId) {
+            document.getElementById('student-payments-list').innerHTML = 
+                '<p class="empty-state">No group assigned</p>';
+            return;
+        }
+        
+        // Listen for payments in this group
+        const unsub = db.collection('payments')
+            .where('groupId', '==', myGroupId)
+            .orderBy('date', 'desc')
+            .onSnapshot(async snapshot => {
+                const list = document.getElementById('student-payments-list');
+                
+                if (snapshot.empty) {
+                    list.innerHTML = '<p class="empty-state">No payments recorded yet</p>';
+                    return;
+                }
+                
+                // Get payer names
+                const studentsSnapshot = await db.collection('users').get();
+                const students = {};
+                studentsSnapshot.docs.forEach(doc => {
+                    students[doc.id] = doc.data();
+                });
+                
+                list.innerHTML = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const payer = students[data.paidBy];
+                    const isMe = data.paidBy === currentUser.uid;
+                    
+                    return `
+                        <div class="payment-card">
+                            <div class="payment-card-header">
+                                <span>${formatDate(data.date)}</span>
+                                <span class="payment-amount">$${data.amount.toFixed(2)}</span>
+                            </div>
+                            <p>Paid by: <strong>${payer ? payer.name : 'Unknown'}${isMe ? ' (You)' : ''}</strong></p>
+                        </div>
+                    `;
+                }).join('');
+            });
+        unsubscribers.push(unsub);
+    });
+}
+// Load Student Payments (COMPREHENSIVE FIX)
+function loadStudentPayments() {
+    console.log('=== Loading Student Payments ===');
+    console.log('Current user ID:', currentUser.uid);
+    
+    // Find student's group first
+    db.collection('groups').get().then(groupsSnapshot => {
+        console.log('Groups found:', groupsSnapshot.docs.length);
+        
+        let myGroupId = null;
+        let myGroupData = null;
+        
+        groupsSnapshot.docs.forEach(doc => {
+            const data = doc.data();
+            console.log('Checking group:', data.name, 'members:', data.members);
+            if (data.members && data.members.includes(currentUser.uid)) {
+                myGroupId = doc.id;
+                myGroupData = data;
+                console.log('Found my group:', data.name, 'Group ID:', myGroupId);
+            }
+        });
+        
+        if (!myGroupId) {
+            console.log('No group found for student');
+            document.getElementById('student-payments-list').innerHTML = 
+                '<p class="empty-state">No group assigned - join a group to see payment history</p>';
+            return;
+        }
+        
+        console.log('Setting up payment listener for group:', myGroupId);
+        
+        // Run this in browser console to test
+db.collection('payments').get().then(snap => {
+  console.log('Total payments in system:', snap.docs.length);
+  snap.docs.forEach(doc => console.log('Payment:', doc.data()));
+});
+// Run this in browser console
+db.collection('groups').get().then(snap => {
+  snap.docs.forEach(doc => {
+    const data = doc.data();
+    if(data.members.includes(auth.currentUser.uid)) {
+      console.log('Found group:', data.name, doc.id);
+    }
+  });
+});
+
+        // Listen for payments in this group
+        const unsub = db.collection('payments')
+            .where('groupId', '==', myGroupId)
+            .orderBy('date', 'desc')
+            .onSnapshot(async snapshot => {
+                console.log('Payments snapshot received, count:', snapshot.docs.length);
+                const list = document.getElementById('student-payments-list');
+                
+                if (snapshot.empty) {
+                    console.log('No payments found for group');
+                    list.innerHTML = '<p class="empty-state">No payments recorded yet in your group</p>';
+                    return;
+                }
+                
+                console.log('Processing payments...');
+                
+                // Get payer names
+                const studentsSnapshot = await db.collection('users').get();
+                const students = {};
+                studentsSnapshot.docs.forEach(doc => {
+                    students[doc.id] = doc.data();
+                });
+                
+                const paymentsHtml = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    console.log('Payment data:', data);
+                    const payer = students[data.paidBy];
+                    const isMe = data.paidBy === currentUser.uid;
+                    
+                    return `
+                        <div class="payment-card">
+                            <div class="payment-card-header">
+                                <span>${formatDate(data.date)}</span>
+                                <span class="payment-amount">$${data.amount.toFixed(2)}</span>
+                            </div>
+                            <p>Paid by: <strong>${payer ? payer.name : 'Unknown'}${isMe ? ' (You)' : ''}</strong></p>
+                        </div>
+                    `;
+                }).join('');
+                
+                console.log('Generated HTML:', paymentsHtml);
+                list.innerHTML = paymentsHtml;
+            }, error => {
+                console.error('Error loading payments:', error);
+                document.getElementById('student-payments-list').innerHTML = 
+                    '<p class="empty-state">Error loading payments: ' + error.message + '</p>';
+            });
+        
+        unsubscribers.push(unsub);
+        console.log('Payment listener set up successfully');
+        
+    }).catch(error => {
+        console.error('Error finding group:', error);
+        document.getElementById('student-payments-list').innerHTML = 
+            '<p class="empty-state">Error finding group: ' + error.message + '</p>';
+    });
+}
+
+// Also add debugging to the student dashboard initialization
+function initStudentDashboard() {
+    console.log('=== Initializing Student Dashboard ===');
+    console.log('Current user:', currentUserData);
+    
+    loadStudentGroup();
+    loadStudentPayments(); // This should now show debugging info
+    loadStudentNotifications();
+    setupStudentListeners();
+    
+    console.log('Student dashboard initialized');
+}
+
+// Add a manual refresh button for testing
+function addRefreshButton() {
+    const paymentHistoryTab = document.getElementById('payment-history-tab');
+    const refreshBtn = document.createElement('button');
+    refreshBtn.className = 'btn btn-small btn-secondary';
+    refreshBtn.innerHTML = '<i class="fas fa-sync"></i> Refresh Payments';
+    refreshBtn.style.marginBottom = '15px';
+    refreshBtn.onclick = () => {
+        console.log('Manual refresh triggered');
+        loadStudentPayments();
+    };
+    
+    // Insert before the payments list
+    const paymentsList = document.getElementById('student-payments-list');
+    paymentHistoryTab.insertBefore(refreshBtn, paymentsList);
+}
+
+// Call this after the page loads
+setTimeout(addRefreshButton, 1000);
+
+
+
+// Load Student Notifications
+function loadStudentNotifications() {
+    // Find student's group
+    db.collection('groups').get().then(groupsSnapshot => {
+        let myGroupId = null;
+        
+        groupsSnapshot.docs.forEach(doc => {
+            const data = doc.data();
+            if (data.members.includes(currentUser.uid)) {
+                myGroupId = doc.id;
+            }
+        });
+        
+        // Listen for notifications (all or group-specific)
+        const unsub = db.collection('notifications')
+            .orderBy('createdAt', 'desc')
+            .onSnapshot(snapshot => {
+                const list = document.getElementById('student-notifications-list');
+                const badge = document.getElementById('notif-badge');
+                
+                // Filter notifications for this user
+                const relevantNotifs = snapshot.docs.filter(doc => {
+                    const data = doc.data();
+                    // Exclude dismissed ones for this user
+                    if (data.dismissedBy && data.dismissedBy.includes(currentUser.uid)) return false;
+                    return data.target === 'all' || data.target === myGroupId || data.groupId === myGroupId;
+                });
+                
+                badge.textContent = relevantNotifs.length;
+                badge.style.display = relevantNotifs.length > 0 ? 'block' : 'none';
+                
+                if (relevantNotifs.length === 0) {
+                    list.innerHTML = '<p class="empty-state">No notifications</p>';
+                    return;
+                }
+                
+                list.innerHTML = relevantNotifs.map(doc => {
+                    const data = doc.data();
+                    const isRead = (data.readBy || []).includes(currentUser.uid);
+                    return `
+                        <div class="notif-card ${isRead ? '' : 'unread'}">
+                            <p>${data.message}</p>
+                            <p class="notif-time">${formatDate(data.createdAt)}</p>
+                            <div style="display:flex;gap:8px;margin-top:8px;">
+                                <button class="btn btn-small btn-secondary" onclick="toggleNotificationRead('${doc.id}')">${isRead ? 'Mark Unread' : 'Mark Read'}</button>
+                                <button class="btn btn-small btn-danger" onclick="dismissNotificationForMe('${doc.id}')">Dismiss</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
+        unsubscribers.push(unsub);
+    });
+}
+
+function setupStudentListeners() {
+    // Real-time notifications
+    let firstLoad = true;
+    
+    const unsub = db.collection('notifications')
+        .orderBy('createdAt', 'desc')
+        .limit(1)
+        .onSnapshot(snapshot => {
+            if (firstLoad) {
+                firstLoad = false;
+                return;
+            }
+            
+            if (snapshot.docChanges().length > 0) {
+                const change = snapshot.docChanges()[0];
+                if (change.type === 'added') {
+                    const data = change.doc.data();
+                    showToast(data.message, 'info');
+                    
+                    // Play notification sound (optional)
+                    try {
+                        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleC8NTrTg8NG7WRM9v+v86MJQC0ez6/3ovlcUQsD3/+nCWxRCwPf/6cJbFD/B9P7tx2EVPMTz/uzNYhY6xvT+78toFznG9f7vy2oXNMv2/u3NbxYzz/P+69JxFjDP8/7r0nEWLdP0/uvVdBct0/T+69V0FyvW9f7p13YXKtT1/OnYeBcp1vX86dp5FybY9P7n3HsXJtr1/ebefBck3vP+5OB+FyPd8/7k4H4XIt7z/uLggBci3vP+4uCAFyDg8/7h4oIWIODz/uHighYf4fL+4eSEFh3i8v7f5oQWHOLy/t/mhBYb4vL+3eiGFhri8f7c6IYWGePx/tzqhxYY4/H+2+uHFhfj8f7b64cWFuTx/trshxYV5PH+2uyIFhTk8f7a7YgWE+Tx/tntiBYS5PH+2O2IFhHk8f7Y7okWEeXx/tfuiRYQ5fH+1++JFg/l8f7X74oWDubx/tbviRYO5vH+1vCKFg3m8f7V8IoWDObx/tXwihYL5vH+1fCKFgvm8f7V8IoWCufx/tTxihYK5/H+1PGKFgnm8f7U8YoWCebx/tTxihYJ5vH+1PGKFgnm8f7U8YoWCOby/tPyixYI5vL+0/KLFgfm8v7T8osWB+by/tPyixYG5/L+0vOLFgbn8v7S84sWBufy/tLzjBYF5/L+0vOMFgXn8v7S84wWBOfy/tHzjBYE5/L+0fOMFgTn8v7R84wWA+jy/tH0jBYD6PL+0fSMFgPo8v7R9IwWAujy/tD0jBYC6PL+0PSMFgLo8v7Q9IwWAejy/tD0jRYB6PL+0PSOFgDo8v7Q9I4WAOjy/tD0jhYA6PL+z/SOFv/n8v7P9I4W/+fy/s/0jhb/5/L+z/SOFv/n8v7P9I4W/+fy/s/0jhb/5/L+z/SNFv/n8v7P9I0W/+fy/s/0jRb/5/L+z/SNFv/n8v7P9I0W/+fy/s/0jRb/5/L+z/SMFv/n8v7P9IwW/+fy/s/0jBb/5/L+z/SMFv/n8v7P9IwWAOjy/s/0jBYA6PL+z/SMFgDo8v7P9IwWAOjy/s/0jBYA6PL+z/SMFgDo8v7P9IwWAejy/tD0jBYB6PL+0PSMFgHo8v7Q9IwWAujy/tD0jBYC6PL+0PSMFgLo8v7Q9IwWA+jy/tH0jBYD6PL+0fSMFgTo8v7R9IwWBOfy/tHzjBYE5/L+0fOMFgXn8v7S84wWBufy/tLzixYG5/L+0vOLFgfn8v7S84sWB+fy/tPyixYI5vL+0/KLFgjm8v7T8osWCeby/tPyixYK5/H+1PGKFgrn8f7U8YoWCubx/tXwihYL5vH+1fCKFgvm8f7V8IoWDObx/tXwihYN5vH+1fCKFg3m8f7W8IoWDubx/tbviRYP5fH+1++JFhDl8f7X74kWEOXx/tjuiRYR5PH+2O6JFhLk8f7Y7YgWE+Tx/tntiBYU5PH+2uyIFhXk8f7a7IcWFuTx/tvriBYX4/H+2+uHFhjj8f7c6ocWGePx/tzqhxYa4vH+3OiGFhri8f7d6IYWHOLy/t/mhBYd4vL+3+aEFh3i8v7f5oQWHuLy/uDkhBYf4fL+4eSCFiDg8/7h4oIWIODz/uHighYh4PP+4uCAFyLe8/7i4IAXIt7z/uTgfhck3fP+5OB+FyTd8/7l4HwXJtr1/ubefBcm2vT+59x7FyjW9f7p2noXKtT1/OnYeBcr1vX86Nd2FyzT9P7r1XQXLdP0/uvVdBcuz/P+69JxFzDP8/7r0nEXMc72/u3PbxczzfP+7c1vFzXL9v7tzG0XN8n2/u/LahY5xvX+78tqFjvG9P7vzGQWPMTz/uzNYhY9wvT+68xiGD/B9P7rxlsYQsD3/+nBWBdBv/n96r9bGEK++P/qv1sYQr/4/+rBWRhBv/j/6sNZGT+/+f/pxFkYP7/4/+nEWRg+wfj/6cZXGD7B+P/pxlcYPsH4/+nGVxg+wfj/6cZXGD7B+P/pxlcYPsH4/+nGVxg+wfj/6cZZGD3C+P/px1gYPML4/+nHWBg8wvf/6cdYGDzC9//pyFgZO8L3/+rIVxk7wvf/6shXGTvC9//qyFcZO8H3/+rJVhk7wff/6slWGTvB9//qyVYZO8H3/+rJVhk7wff/6slWGTvB9//qyVYZO8H3/+rJVhk7wff/6slWGTvB9//qyVYZO8H3/+rJVhk=');
+                        audio.volume = 0.3;
+                        audio.play();
+                    } catch (e) {}
+                }
+            }
+        });
+    unsubscribers.push(unsub);
+}
+
+// Notification bell click
+document.getElementById('student-notif-bell').addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-tab="my-notifications"]').classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById('my-notifications-tab').classList.add('active');
+});
+
+// Initialize the app
+console.log('Canteen Turn Management System Loaded');
+</script>
+</body>
+</html>
